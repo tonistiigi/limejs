@@ -13,6 +13,9 @@ goog.require('box2d.World');
 lime.Box2D = function(node){
     goog.base(this, node);
     
+    this.shapes_ = [];
+    node.box2dBase_ = this;
+    
     node.getGravity = lime.Box2D.getGravity;
     node.setGravity = lime.Box2D.setGravity;
     node.getWorldBounds = lime.Box2D.getWorldBounds;
@@ -22,11 +25,34 @@ lime.Box2D = function(node){
     node.setGravity(0, 0);
     node.setBounds(-1500, 2000, 1500, -2000); // way to define in some other way?
     
+    lime.scheduleManager.schedule(this.updatePositions, this);
+    
 }
 goog.inherits(lime.Box2D, lime.Plugin);
 
 /** @const @type {number} */
 lime.Box2D.RATIO = 30;
+
+lime.Box2D.prototype.updatePositions = function(dt){
+    if (dt>100) dt=100; // long delays(after pause) cause false collisions (maybe should be in scheduleManger instead)
+    this.node_.getWorld().Step(dt / 1000, 3);
+    
+    for (var i=0 ; i < this.shapes_.length ; i++) {
+        var shape = this.shapes_[i];
+        var body = shape.getBody();
+        var position = goog.math.Coordinate.prototype.clone.call(body.GetCenterPosition());
+        if (position.getParent() != this.node_ ) {
+            position = this.node_.localToNode(this.getParent());
+        }
+        shape.no_physics_update_ = 1;
+        shape.setRotation(-body.GetRotation / Math.PI * 180);
+        shape.setPosition(position);
+        shape.no_physics_update_ = 0;
+    }
+    
+}
+
+lime.Box
 
 /**
  * @this {lime.Node}
