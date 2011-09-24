@@ -13,6 +13,7 @@ lime.Box2DShape = function(node){
    
     this.bodyProp_ = {};
     this.shapeProp_ = {};
+    this.shapes_ = [];
     
     node.getAngularDamping = lime.Box2DShape.getAngularDamping;
     node.setAngularDamping = lime.Box2DShape.setAngularDamping;
@@ -29,7 +30,8 @@ goog.inherits(lime.Box2DShape, lime.Plugin);
  */
 lime.Box2DShape.getBody = function(){
     if (!this.body_) {
-        
+        if (this.shapes_.length === 0)
+            this.makeShapes_();
     }
     return this.body_;
 };
@@ -101,6 +103,17 @@ lime.Box2DShape.wasRemovedFromTree = function(){
     }
 };
 
+/**
+ * @this {lime.Node}
+ */
 lime.Box2DShape.makeShapes = function(){
-    
+    if ( this.id === "circle") {
+        // circle shape (what to do with ellipses??)
+    }
+    else if (this.id === "polygon"){
+        //polygon shape
+    }
+    else {
+        //box shape
+    }
 }
