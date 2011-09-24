@@ -1286,3 +1286,12 @@ lime.Node.prototype.runAction = function(action) {
     action.addTarget(this);
     action.play();
 };
+
+lime.Node.prototype.use = function(pluginClass){
+    if (this.plugins_) this.plugins_ = [];
+    if (goog.array.indexOf(this.plugins_, pluginClass) !== false){
+        var plugin = new pluginClass(this);
+        this.plugins_.push(plugin);
+    }
+    return this;
+}
