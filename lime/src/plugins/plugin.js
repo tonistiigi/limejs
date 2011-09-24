@@ -12,16 +12,10 @@ lime.Plugin = function(node) {
 };
 
 lime.Plugin.prototype.extendFunction = function(oldFunction, newFunction){
-    var f = function(){
+    return function(){
         var result = oldFunction.apply(this.node_, arguments);
         newFunction.apply(this.node_, arguments);
         return result;
-    }
-    
-    for (i in this.node_) {
-        if (this.node_[i] == oldFunction){
-            this.node_[i] = f;
-        }
     }
 };
 
