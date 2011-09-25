@@ -20,6 +20,7 @@ lime.Box2DShape = function(node){
     node.setPosition = this.extendFunction(node.setPosition, lime.Box2DShape.setPosition);
     node.wasAddedToTree = this.extendFunction(node.wasAddedToTree, lime.Box2DShape.wasAddedToTree, true);
     node.wasRemovedFromTree = this.extendFunction(node.wasRemovedFromTree, limeBox2DShape.wasRemovedFromTree, true);
+    node.getBox2DBase = lime.Box2DShape.getBox2DBase;
     
 };
 goog.inherits(lime.Box2DShape, lime.Plugin);
@@ -30,8 +31,19 @@ goog.inherits(lime.Box2DShape, lime.Plugin);
  */
 lime.Box2DShape.getBody = function(){
     if (!this.body_) {
+        var bodyDef = new box2d.BodyDef;
+        var pos = this.getPosition(); //todo: add gradchildren support
+        bodyDef.position.Set(pos.x, pos.y);
+        bodyDef.rotation = -this.getRotation() / 180 * Math.PI;
+        
         if (this.shapes_.length === 0)
             this.makeShapes_();
+        
+        for(var i=0;i<this.shapes_;i++){
+            bodyDef.AddShape(this.shapes_[i]);
+        }
+        
+        this.body_ = this.getBox2DBase().getWorld().CreateBody(bodyDef);
     }
     return this.body_;
 };
@@ -81,32 +93,34 @@ lime.Box2DShape.setRotation = function(){
  * @this {lime.Node}
  */
 lime.Box2DShape.wasAddedToTree = function(){
-    var parent = this;
-    while (parent) {
-        parent = parent.getParent();
-        if (parent.box2dBase_) {
-            return parent.box2dBase_.shapes_.push(this);
-        }
-    }
+    this.getBox2DBase().shapes_.push(this);
 };
 
 /**
  * @this {lime.Node}
  */
 lime.Box2DShape.wasRemovedFromTree = function(){
-    var parent = this;
-    while (parent) {
-        parent = parent.getParent();
-        if (parent.box2dBase_) {
-            return goog.array.remove(parent.box2dBase_.shapes_, this);
-        }
-    }
+    goog.array.remove(this.getBox2DBase().shapes_, this);
 };
 
 /**
  * @this {lime.Node}
  */
+lime.Box2DShape.getBox2DBase = function(){
+    var parent = this;
+    while (parent) {
+        parent = parent.getParent();
+        if (parent.box2dBase_) {
+            return parent.box2dBase_;
+        }
+    }
+}
+
+/**
+ * @this {lime.Node}
+ */
 lime.Box2DShape.makeShapes = function(){
+    this.shapes_ = [];
     if ( this.id === "circle") {
         // circle shape (what to do with ellipses??)
     }
@@ -115,5 +129,15 @@ lime.Box2DShape.makeShapes = function(){
     }
     else {
         //box shape
+        var shapeDef = new box2d.BoxDef;
+        shapeDef.restitution = .9
+        shapeDef.density = 0; // static
+        shapeDef.friction = 1;
+        var size = this.getSize();
+        shapeDef.extents.Set(size.width / 2, size.height / 2); //todo: support other anchorpoints
+        this.shapes_.push(shapeDef);
+    }
+    if(this.body_){
+        // todo: reset shape list
     }
 }
