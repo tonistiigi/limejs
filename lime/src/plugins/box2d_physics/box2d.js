@@ -4,6 +4,7 @@ goog.require('lime.Plugin');
 goog.require('box2d.AABB');
 goog.require('box2d.Vec2');
 goog.require('box2d.World');
+goog.require('lime.Box2DShape');
 
 /**
  * Box2D base plugin
@@ -23,7 +24,7 @@ lime.Box2D = function(node){
     node.getWorld = lime.Box2D.getWorld;
     
     node.setGravity(0, 0);
-    node.setBounds(-1500, 2000, 1500, -2000); // way to define in some other way?
+    node.setWorldBounds(-1500, 2000, 1500, -2000); // way to define in some other way?
     
     lime.scheduleManager.schedule(this.updatePositions, this);
     
@@ -41,8 +42,8 @@ lime.Box2D.prototype.updatePositions = function(dt){
         var shape = this.shapes_[i];
         var body = shape.getBody();
         var position = goog.math.Coordinate.prototype.clone.call(body.GetCenterPosition());
-        if (position.getParent() != this.node_ ) {
-            position = this.node_.localToNode(this.getParent());
+        if (shape.getParent() != this.node_ ) {
+            position = this.node_.localToNode(shape.getParent());
         }
         shape.no_physics_update_ = 1;
         shape.setRotation(-body.GetRotation / Math.PI * 180);
@@ -124,6 +125,7 @@ lime.Box2D.setWorldBounds = function(value, opt_right, opt_bottom, opt_left){
     return this;
 };
 
-lime.Node.prototype.makeBox2DWorld() = function(){
+lime.Node.prototype.makeBox2DWorld = function(){
     this.use(lime.Box2D);
+    return this;
 };

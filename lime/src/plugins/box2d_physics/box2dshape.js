@@ -19,8 +19,10 @@ lime.Box2DShape = function(node){
     node.setAngularDamping = lime.Box2DShape.setAngularDamping;
     node.setPosition = this.extendFunction(node.setPosition, lime.Box2DShape.setPosition);
     node.wasAddedToTree = this.extendFunction(node.wasAddedToTree, lime.Box2DShape.wasAddedToTree, true);
-    node.wasRemovedFromTree = this.extendFunction(node.wasRemovedFromTree, limeBox2DShape.wasRemovedFromTree, true);
+    node.wasRemovedFromTree = this.extendFunction(node.wasRemovedFromTree, lime.Box2DShape.wasRemovedFromTree, true);
     node.getBox2DBase = lime.Box2DShape.getBox2DBase;
+    node.getBody = lime.Box2DShape.getBody;
+    node.makeShapes = lime.Box2DShape.makeShapes;
     
 };
 goog.inherits(lime.Box2DShape, lime.Plugin);
@@ -36,14 +38,14 @@ lime.Box2DShape.getBody = function(){
         bodyDef.position.Set(pos.x, pos.y);
         bodyDef.rotation = -this.getRotation() / 180 * Math.PI;
         
-        if (this.shapes_.length === 0)
-            this.makeShapes_();
+        if (this.box2dshape_.shapes_.length === 0)
+            this.makeShapes();
         
-        for(var i=0;i<this.shapes_;i++){
-            bodyDef.AddShape(this.shapes_[i]);
+        for(var i=0;i<this.box2dshape_.shapes_;i++){
+            bodyDef.AddShape(this.box2dshape_.shapes_[i]);
         }
         
-        this.body_ = this.getBox2DBase().getWorld().CreateBody(bodyDef);
+        this.body_ = this.getBox2DBase().node_.getWorld().CreateBody(bodyDef);
     }
     return this.body_;
 };
@@ -135,13 +137,14 @@ lime.Box2DShape.makeShapes = function(){
         shapeDef.friction = 1;
         var size = this.getSize();
         shapeDef.extents.Set(size.width / 2, size.height / 2); //todo: support other anchorpoints
-        this.shapes_.push(shapeDef);
+        this.box2dshape_.shapes_.push(shapeDef);
     }
     if(this.body_){
         // todo: reset shape list
     }
 }
 
-lime.Node.prototype.makeBox2D() = function(){
+lime.Node.prototype.makeBox2D = function(){
     this.use(lime.Box2DShape);
+    return this;
 };

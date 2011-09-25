@@ -1,6 +1,6 @@
 goog.provide('lime.Plugin');
 
-goog.provide('lime.Node');
+goog.require('lime.Node');
 
 /**
 * Plugin
@@ -13,15 +13,15 @@ lime.Plugin = function(node) {
 
 lime.Plugin.prototype.extendFunction = function(oldFunction, newFunction, opt_addToFront){
     var addToFront = !!opt_addToFront;
-    
+    var node = this.node_;
     return function(){
         if (addToFront)
-            newFunction.apply(this.node_, arguments);
+            newFunction.apply(node, arguments);
         
-        var result = oldFunction.apply(this.node_, arguments);
+        var result = oldFunction.apply(node, arguments);
         
         if (!addToFront)
-            newFunction.apply(this.node_, arguments);
+            newFunction.apply(node, arguments);
         return result;
     }
 };
