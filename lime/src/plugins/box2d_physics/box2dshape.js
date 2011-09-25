@@ -141,3 +141,7 @@ lime.Box2DShape.makeShapes = function(){
         // todo: reset shape list
     }
 }
+
+lime.Node.prototype.makeBox2D() = function(){
+    this.use(lime.Box2DShape);
+};

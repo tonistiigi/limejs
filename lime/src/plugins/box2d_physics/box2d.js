@@ -123,3 +123,7 @@ lime.Box2D.setWorldBounds = function(value, opt_right, opt_bottom, opt_left){
     this.worldBounds_ = value;
     return this;
 };
+
+lime.Node.prototype.makeBox2DWorld() = function(){
+    this.use(lime.Box2D);
+};
