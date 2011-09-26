@@ -1,6 +1,8 @@
 goog.provide('lime.Box2DShape');
 
-goog.require('lime.Plugin'); 
+goog.require('lime.Plugin');
+goog.require('box2d.BodyDef');
+goog.require('box2d.BoxDef');
 
 /**
  * @constructor
@@ -14,7 +16,6 @@ lime.Box2DShape = function(node){
     this.bodyProp_ = {};
     this.shapeProp_ = {};
     this.shapes_ = [];
-    
     node.getAngularDamping = lime.Box2DShape.getAngularDamping;
     node.setAngularDamping = lime.Box2DShape.setAngularDamping;
     node.setPosition = this.extendFunction(node.setPosition, lime.Box2DShape.setPosition);
@@ -23,6 +24,7 @@ lime.Box2DShape = function(node){
     node.getBox2DBase = lime.Box2DShape.getBox2DBase;
     node.getBody = lime.Box2DShape.getBody;
     node.makeShapes = lime.Box2DShape.makeShapes;
+    
     
 };
 goog.inherits(lime.Box2DShape, lime.Plugin);
@@ -40,12 +42,12 @@ lime.Box2DShape.getBody = function(){
         
         if (this.box2dshape_.shapes_.length === 0)
             this.makeShapes();
-        
-        for(var i=0;i<this.box2dshape_.shapes_;i++){
+        for(var i=0;i<this.box2dshape_.shapes_.length;i++){
             bodyDef.AddShape(this.box2dshape_.shapes_[i]);
         }
         
         this.body_ = this.getBox2DBase().node_.getWorld().CreateBody(bodyDef);
+        this.body_.createdHere = 1;
     }
     return this.body_;
 };
