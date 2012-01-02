@@ -1,6 +1,7 @@
 goog.provide('lime.ui.Scroll');
 
 goog.require('lime.Sprite');
+goog.require('zynga.Scroller');
 
 /**
  * Object representing Drag interaction.
@@ -28,7 +29,7 @@ lime.ui.Scroll = function(targetObject) {
 
     var t = this;
     // Initialize Scroller
-    this.scroller = new Scroller(function(left, top, zoom) {
+    this.scroller = new zynga.Scroller(function(left, top, zoom) {
         t.moving_.setPosition(-left,-top);
         t.moving_.setScale(zoom);
     }, {
@@ -87,10 +88,7 @@ lime.ui.Scroll.prototype.moveHandler_ = function(e) {
 };
 
 lime.ui.Scroll.prototype.upHandler_ = function(e) {
-    this.scroller.doTouchEnd([{
-        pageX : e.position.x,
-        pageY : e.position.y 
-    }], e.event.getBrowserEvent().timeStamp);
+    this.scroller.doTouchEnd(e.event.getBrowserEvent().timeStamp);
 
 };
 
