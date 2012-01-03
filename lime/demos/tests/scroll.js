@@ -49,7 +49,7 @@ test.start = function() {
     var scroll2 = new lime.ui.Scroll().setFill(
         new lime.fill.LinearGradient().addColorStop(0, 100, 0, 0, .4).addColorStop(1, 100, 0, 0, .0)
         ).setAnchorPoint(0, 0)
-        .setSize(170, 230).setPosition(200,200);
+        .setSize(170, 230).setPosition(200,200).setScrollingX(false).setScrollingY(true);
 
     layer.appendChild(scroll2);
 

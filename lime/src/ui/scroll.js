@@ -8,7 +8,7 @@ goog.require('zynga.Scroller');
  * @constructor
  * @extends lime.Sprite
  */
-lime.ui.Scroll = function(targetObject) {
+lime.ui.Scroll = function(targetObject, isVertical) {
     
     goog.base(this);
 
@@ -17,7 +17,7 @@ lime.ui.Scroll = function(targetObject) {
 
     this.clipper = new lime.Sprite().setFill('#c00').setSize(100, 100).setAnchorPoint(0,0).setPosition(0,0).
         setAutoResize(lime.AutoResize.ALL);
-    this.appendChild(this.clipper);
+    lime.Node.prototype.appendChild.call(this, this.clipper);
     this.setMask(this.clipper);
 
     this.moving_ = new lime.Layer();
@@ -26,18 +26,38 @@ lime.ui.Scroll = function(targetObject) {
     goog.events.listen(this, ['mousedown', 'touchstart'],
         this.downHandler_, false, this);
 
-
-    var t = this;
+    this.scrollPos_ = new goog.math.Coordinate(0, 0);
+    
     // Initialize Scroller
-    this.scroller = new zynga.Scroller(function(left, top, zoom) {
-        t.moving_.setPosition(-left,-top);
-        t.moving_.setScale(zoom);
-    }, {
-        zooming: true
-    });
+    this.scroller = new zynga.Scroller(goog.bind(this.onscroll_, this), {zooming: false});
+    
+    this.setScrollingX(isVertical ? false : true);
+    this.setScrollingY(isVertical ? true : false);
 };
 goog.inherits(lime.ui.Scroll, lime.Sprite);
 
+lime.ui.Scroll.prototype.getScrollingX = function(){
+    return this.scrollingX_;
+}    
+lime.ui.Scroll.prototype.getScrollingY = function(){
+    return this.scrollingY_;
+}
+
+lime.ui.Scroll.prototype.setScrollingX = function(value){
+    this.scrollingX_ = value;
+    this.scroller.options.scrollingX = value;
+    return this;
+}    
+lime.ui.Scroll.prototype.setScrollingY = function(value){
+    this.scrollingY_ = value;
+    this.scroller.options.scrollingY = value;
+    return this;
+}
+
+lime.ui.Scroll.prototype.onscroll_ = function(left, top, zoom) {
+    this.moving_.setPosition(-left-(this.getScrollingX() ? this.leftEdge : 0),-top-(this.getScrollingY() ? this.topEdge : 0));
+    this.moving_.setScale(zoom);
+};
 
 /**
  * @inheritDoc
@@ -96,11 +116,16 @@ lime.ui.Scroll.prototype.update = function(opt_pass) {
     var s1 = this.getSize();
     var s2 = this.moving_.measureContents();
     this.scroller.setDimensions(s1.width, s1.height, s2.right-s2.left, s2.bottom-s2.top);
+    this.leftEdge = s2.left;
+    this.topEdge = s2.top;
+    this.scroller.scrollTo(this.scrollPos_.x, this.scrollPos_.y);
     return lime.Node.prototype.update.apply(this, arguments);
 }
 
-lime.ui.Scroll.prototype.scrollTo = function(){
-    //not implemented
+lime.ui.Scroll.prototype.scrollTo = function(x, y){
+    this.scrollPos_.x = x;
+    this.scrollPos_.y = y;
+    this.scroller.scrollTo(x, y);
 }
 
 /**

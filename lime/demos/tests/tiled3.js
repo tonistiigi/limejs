@@ -21,7 +21,7 @@ test.start = function(){
 	var gamescene = new lime.Scene;
 	
 	var tmx = new lime.parser.TMX('assets/isometric_grass_and_water.tmx');
-	var scroller = new lime.ui.Scroll().setSize(500,300).setAnchorPoint(0,0).setPosition(100,100);
+	var scroller = new lime.ui.Scroll().setScrollingY(true).setSize(500,300).setAnchorPoint(0,0).setPosition(100,100);
 	gamescene.appendChild(scroller);
 	
 	layer = new lime.Layer().setRenderer(lime.Renderer.CANVAS).setPosition(400,0);
@@ -38,6 +38,7 @@ test.start = function(){
 	}
 	
 	scroller.appendChild(layer);
+	scroller.scrollTo(400,200);
 	
 	
     // set active scene
