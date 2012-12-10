@@ -8,7 +8,6 @@ goog.require('lime.Scene');
 goog.require('lime.Sprite');
 goog.require('lime.fill.LinearGradient');
 goog.require('lime.ui.Scroller');
-goog.require('lime.ui.Scroll');
 
 
 
@@ -28,7 +27,7 @@ test.start = function() {
 	layer.setPosition(200, 100);
 	gamescene.appendChild(layer);
 
-	var scroll = new lime.ui.Scroll().setFill('#ccc').setAnchorPoint(0, 0.5).setSize(400, 130);
+	var scroll = new lime.ui.Scroller().setFill('#ccc').setAnchorPoint(0, 0.5).setSize(400, 130);
 	layer.appendChild(scroll);
 
 
@@ -46,12 +45,12 @@ test.start = function() {
 
 	var lipsum = ('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent mauris magna, bibendum tempor vulputate vel, pharetra vitae diam.').split(' ');
 
-    var scroll2 = new lime.ui.Scroll().setFill(
+    var scroll2 = new lime.ui.Scroller().setFill(
         new lime.fill.LinearGradient().addColorStop(0, 100, 0, 0, .4).addColorStop(1, 100, 0, 0, .0)
         ).setAnchorPoint(0, 0)
-        .setSize(170, 230).setPosition(200,200).setScrollingX(false).setScrollingY(true);
+        .setSize(170, 230).setDirection(lime.ui.Scroller.Direction.VERTICAL);
 
-    layer.appendChild(scroll2);
+    scroll.appendChild(scroll2);
 
     for (var i = 0; i < lipsum.length; i++) {
         var b = new lime.Label(lipsum[i]).setFill(0, 100, 0, .2).setPosition(10, i * 40).setSize(150, 30).setAnchorPoint(0, 0).setPadding(7);
