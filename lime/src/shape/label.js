@@ -73,7 +73,7 @@ lime.Label.prototype.measureText = function() {
     if (this.getMultiline()) {
         lh *= goog.string.trim(this.text_).split('\n').length
     }
-    mContext.font = this.getFontSize() + 'px ' + this.getFontFamily();
+    mContext.font = this.getFontSize() + 'px Helvetica' //+ this.getFontFamily();
     var metrics = mContext.measureText(this.text_);
     var w = goog.userAgent.WEBKIT ? metrics.width : metrics.width + 1;
 
@@ -520,8 +520,8 @@ lime.Renderer.CANVAS.LABEL.draw = function(context) {
     var lh = this.getLineHeight();
 
     context.fillStyle = this.getFontColor();
-    context.font = this.getFontWeight() + ' ' + this.getFontSize() +
-        'px/' + lh + ' ' + this.getFontFamily();
+    context.font = this.getFontSize() + 'px Helvetica'/*this.getFontWeight() + ' ' + this.getFontSize() +
+        'px/' + lh + ' ' + this.getFontFamily();*/
     context.textAlign = align;
     context.textBaseline = 'top';
 
