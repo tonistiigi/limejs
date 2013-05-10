@@ -41,7 +41,7 @@ lime.Renderer.CANVAS.drawCanvas = function() {
     }
     else {
         if (this.staticCanvas != 1 && this.children_.length != 0) {
-           if(!(this instanceof lime.Scene)){
+           if(!(this instanceof lime.Scene) && !(this instanceof lime.Director)){
                bounds.expand(PADDING, PADDING, PADDING, PADDING);
            }
         }
@@ -75,12 +75,15 @@ lime.Renderer.CANVAS.drawCanvas = function() {
     var bsize = bounds.size();
     var pxsize = bsize.clone().scale(rquality).ceil();
 
+
+
     if (this.domElement.width != pxsize.width ||
         this.domElement.height != pxsize.height) {
-            this.domElement.width = pxsize.width;
-            this.domElement.height = pxsize.height;
+            if (this.domElement !== this.container) {
+                this.domElement.width = pxsize.width;
+                this.domElement.height = pxsize.height;
+            }
             this.redraw_ = 1;
-            //   console.log('redraw');
         }
 
 
@@ -129,17 +132,25 @@ lime.Renderer.CANVAS.drawCanvas = function() {
             if (goog.isDef(this.transitionsActive_[lime.Transition.ROTATION])) {
                 rotation = -this.transitionsActive_[lime.Transition.ROTATION];
             }
-            lime.style.setTransform(this.domElement,
-                new lime.style.Transform().setPrecision(.1).translate(pos.x, pos.y).
-                scale(realScale.x, realScale.y).rotate(rotation));
+            if (this.domElement !== this.container) {
+                lime.style.setTransform(this.domElement,
+                    new lime.style.Transform().setPrecision(.1).translate(pos.x, pos.y).
+                    scale(realScale.x, realScale.y).rotate(rotation));
+            }
         }
+
+
 
         if (this.redraw_) {
             var context = this.domElement.getContext('2d');
             rquality = this.relativeQuality_ || 1;
 
-            context.clearRect(0, 0, pxsize.width, pxsize.height);
+            context.clearRect(0, 0, this.domElement.width, this.domElement.height);
             context.save();
+            if (this.domElement === this.container) {
+                context.translate(pos.x, pos.y);
+                context.scale(realScale.x, realScale.y);
+            }
             context.translate(this.ax, this.ay);
             context.scale(rquality, rquality);
 
