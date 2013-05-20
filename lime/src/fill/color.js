@@ -14,8 +14,10 @@ goog.require('lime.fill.Fill');
 lime.fill.Color = function(clr) {
     lime.fill.Fill.call(this);
 
+    this._hasRGBA = false;
+
     this.a = 1;
-    
+
     this.setColor(clr);
 
 };
@@ -29,9 +31,14 @@ lime.fill.Color.prototype.id = 'color';
 
 /**
 * Gets color as RGBA array.
+* @deprecated
 * @return {null|Array.<number>} RGBA array.
 */
 lime.fill.Color.prototype.getRgba = function() {
+    if(goog.DEBUG && console && console.warn) {
+        console.warn('color.getRgba() is deprecated.');
+    }
+
     var out = null;
 
     if (goog.isNumber(this.r) && goog.isNumber(this.g) &&
@@ -47,6 +54,24 @@ lime.fill.Color.prototype.getRgba = function() {
     }
 
     return out;
+};
+
+lime.fill.Color.prototype.setRGBFromString = function(str) {
+    var color = goog.color.parse(str);
+    if (color.type != 'named') {
+        var rgb = goog.color.hexToRgb(color.hex);
+        this.r = rgb.r;
+        this.g = rgb.g;
+        this.b = rgb.b;
+    }
+}
+
+lime.fill.Color.prototype.ensureRGBA = function() {
+    if (!this._hasRGBA) {
+        this.setRGBFromString();
+        this._hasRGBA = true;
+    }
+    return this;
 };
 
 /**
@@ -99,9 +124,17 @@ lime.fill.Color.prototype.setColor = function(clr) {
     var color = clr;
 
     if (goog.isString(clr)) {
+        if (this._hasRGBA) {
+            this.setRGBFromString(clr);
+        }
+        else {
+            this.r = this.g = this.b = 1;
+        }
         this.str = clr;
         return this;
     }
+
+    this._hasRGBA = true;
 
     if (arguments.length > 2) {
         color = arguments;
@@ -136,11 +169,5 @@ lime.fill.Color.prototype.setCanvasStyle = function(context) {
  * @return {lime.fill.Color} New cloned color.
  */
 lime.fill.Color.prototype.clone = function() {
-    var c = new lime.fill.Color('');
-    c.r = this.r;
-    c.g = this.g;
-    c.b = this.b;
-    c.a = this.a;
-    c.str = this.str;
-    return c;
+    return new lime.fill.Color([this.r, this.g, this.b, this.a]);
 };
