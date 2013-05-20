@@ -553,6 +553,14 @@ lime.Node.prototype.setAllow3DCSSTransforms = function(value) {
     return this;
 };
 
+lime.Node.prototype.setAllow3DCSSTransformsRecursive = function(value) {
+    this.allow3DCSSTransform_ = value;
+    for (var i = 0; i < this.children_.length; i++) {
+        this.children_[i].setAllow3DCSSTransformsRecursive(value);
+    }
+    return this;
+};
+
 /**
  * Returns css 3d transforms flag
  * @return {boolean}
