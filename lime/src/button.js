@@ -83,6 +83,7 @@ lime.Button.Event = {
 lime.Button.prototype.setUpState = function(upstate) {
     this.upstate = upstate;
     this.appendChild(this.upstate);
+    upstate.setAllow3DCSSTransformsRecursive(false);
 
     this.state_ = -1;
     return this.setState(lime.Button.State.UP);
@@ -97,6 +98,7 @@ lime.Button.prototype.setUpState = function(upstate) {
 lime.Button.prototype.setDownState = function(downstate) {
     this.downstate = downstate;
     this.appendChild(downstate);
+    downstate.setAllow3DCSSTransformsRecursive(false);
 
     this.state_ = -1;
     return this.setState(lime.Button.State.UP);
