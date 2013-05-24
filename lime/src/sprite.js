@@ -1,3 +1,5 @@
+"use strict"
+
 goog.provide('lime.Renderer.CANVAS.SPRITE');
 goog.provide('lime.Renderer.DOM.SPRITE');
 goog.provide('lime.Sprite');
@@ -28,10 +30,11 @@ lime.Sprite = function() {
      */
     this.fill_ = null;
 
-
     this.stroke_ = null;
 
-
+    if (this.constructor === lime.Sprite) {
+        Object.preventExtensions(this);
+    }
 };
 goog.inherits(lime.Sprite, lime.Node);
 

@@ -1,3 +1,5 @@
+"use strict"
+
 goog.provide('lime.Button');
 
 goog.require('lime.Layer');

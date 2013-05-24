@@ -1,3 +1,5 @@
+"use strict"
+
 goog.provide('lime.Renderer.CANVAS');
 
 goog.require('goog.math.Box.size');

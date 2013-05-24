@@ -1,3 +1,5 @@
+"use strict"
+
 goog.provide('lime.Scene');
 
 
@@ -17,6 +19,10 @@ lime.Scene = function() {
     this.domClassName = goog.getCssName('lime-scene');
 
     //this.updateDomElement();
+
+    if (this.constructor === lime.Scene) {
+        Object.preventExtensions(this);
+    }
 
 };
 goog.inherits(lime.Scene, lime.Node);

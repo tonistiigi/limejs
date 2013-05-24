@@ -1,3 +1,5 @@
+"use strict"
+
 goog.provide('lime.Renderer.DOM');
 
 goog.require('goog.dom');

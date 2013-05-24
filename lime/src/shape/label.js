@@ -1,3 +1,5 @@
+"use strict"
+
 goog.provide('lime.Label');
 goog.provide('lime.Renderer.CANVAS.LABEL');
 goog.provide('lime.Renderer.DOM.LABEL');
@@ -39,6 +41,11 @@ lime.Label = function(txt) {
     this.sizeCache_ = null;
     this.words_ = null;
     this.lines_ = null;
+
+
+    if (this.constructor === lime.Label) {
+        Object.preventExtensions(this);
+    }
 
 };
 goog.inherits(lime.Label, lime.Sprite);

@@ -1,3 +1,5 @@
+"use strict"
+
 goog.provide('lime.Circle');
 goog.provide('lime.Renderer.CANVAS.CIRCLE');
 goog.provide('lime.Renderer.DOM.CIRCLE');
@@ -85,11 +87,11 @@ lime.Renderer.CANVAS.CIRCLE.draw = function(context) {
     context.clip();
 
     lime.Renderer.CANVAS.SPRITE.draw.call(this, context);
-    
+
     if(this.stroke_){
         context.lineWidth*=2;
         context.stroke();
     }
-    
+
     context.restore();
 };

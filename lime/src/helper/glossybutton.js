@@ -1,3 +1,5 @@
+"use strict"
+
 goog.provide('lime.GlossyButton');
 
 goog.require('lime.Button');

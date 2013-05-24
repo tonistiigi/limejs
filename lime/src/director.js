@@ -1,3 +1,5 @@
+"use strict"
+
 goog.provide('lime.Director');
 
 
@@ -123,7 +125,7 @@ lime.Director = function(parentElement, opt_width, opt_height) {
     ));
 
     // --define goog.debug=false
-    this.setDisplayFPS(goog.DEBUG);
+    this.setDisplayFPS(false);
     this.setPaused(false);
 
     var vsm = new goog.dom.ViewportSizeMonitor();
@@ -159,6 +161,11 @@ lime.Director = function(parentElement, opt_width, opt_height) {
 
     if(goog.DEBUG){
         goog.events.listen(goog.global,'keyup',this.keyUpHandler_,false,this);
+    }
+
+
+    if (this.constructor === lime.Director) {
+        Object.preventExtensions(this);
     }
 
 };

@@ -1,3 +1,5 @@
+"use strict"
+
 goog.provide('lime.Node');
 
 
@@ -21,6 +23,8 @@ goog.require('lime.Renderer.DOM');
 */
 lime.Node = function() {
     goog.events.EventTarget.call(this);
+
+    goog.getUid(this);
 
     this.children_ = [];
 
@@ -93,6 +97,21 @@ lime.Node = function() {
     this.autoHide_ = null;
     this.dependencySet_ = null;
     this.maskTarget_ = null;
+
+    this.positionDrawn_ = undefined;
+    this.scaleDrawn_ = undefined;
+    this.opacityDrawn_ = undefined;
+    this.rotationDrawn_ = undefined;
+
+    this.containerElement = undefined;
+    this.rootElement = undefined;
+    this.domElement = undefined;
+
+    this.qualityRenderer = null;
+
+    if (this.constructor === lime.Node) {
+      Object.preventExtensions(this)
+    }
 };
 goog.inherits(lime.Node, goog.events.EventTarget);
 

@@ -1,3 +1,5 @@
+"use strict"
+
 goog.provide('lime.Layer');
 
 
@@ -15,6 +17,10 @@ lime.Layer = function() {
     lime.Node.call(this);
 
     this.domClassName = goog.getCssName('lime-layer');
+
+    if (this.constructor === lime.Layer) {
+       Object.preventExtensions(this);
+    }
 };
 goog.inherits(lime.Layer, lime.Node);
 
