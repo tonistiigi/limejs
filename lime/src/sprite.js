@@ -120,7 +120,7 @@ lime.Renderer.DOM.SPRITE.draw = function(el) {
     if (!goog.isNull(this.stroke_)) {
         this.stroke_.setDOMStyle(el, this);
     } else {
-        goog.style.setStyle(el, 'border-width', 0);
+        el.style['borderWidth'] = 0;
     }
 };
 
@@ -132,23 +132,23 @@ lime.Renderer.CANVAS.SPRITE.draw = function(context) {
     var size = this.getSize(), fill = this.fill_, stroke = this.stroke_;
 
     if (!fill && !stroke) return;
-    
+
     var frame = this.getFrame();
-    
-    
+
+
     if(fill){
         fill.setCanvasStyle(context, this);
-    
+
         if(fill.id != 'image' && fill.id!='frame'){
             context.fillRect(frame.left,frame.top,
                 size.width, size.height);
         }
     }
-    
-    
+
+
     if(stroke){
         stroke.setCanvasStyle(context,this);
-        
+
         if(this.id=='sprite' || this.id=='label'){
         var lw = stroke.width_/2;
         context.strokeRect(frame.left+lw,frame.top+lw,
