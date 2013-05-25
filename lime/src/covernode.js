@@ -43,14 +43,13 @@ lime.CoverNode.prototype.update = function() {
 
     var size = goog.style.getSize(this.director.baseElement.parentNode),
         style = this.baseElement.style,
-        dscale = this.director.getScale(),
-        quality = this.getQuality();
+        dscale = this.director.getScale();
 
     style['width'] = size.width + 'px';
     style['height'] = size.height + 'px';
 
-    this.baseElement.width = (size.width / dscale.x) * quality;
-    this.baseElement.height = (size.height / dscale.y) * quality;
+    this.baseElement.width = size.width / dscale.x;
+    this.baseElement.height = size.height / dscale.y;
 
     // some action has set update area limits?
     if (this.updateRect_) {
@@ -67,8 +66,8 @@ lime.CoverNode.prototype.update = function() {
 lime.CoverNode.prototype.setNeedsRedraw = function() {
 
     var box = new goog.math.Box(
-        0, this.baseElement.width / this.getQuality(),
-        this.baseElement.height / this.getQuality(), 0
+        0, this.baseElement.width,
+        this.baseElement.height, 0
     );
     this.setNeedsRedrawInRect(this.director.getBounds(box));
 
@@ -81,12 +80,10 @@ lime.CoverNode.prototype.setNeedsRedraw = function() {
  */
 lime.CoverNode.prototype.setNeedsRedrawInRect = function(box) {
     var dir = this.director,
-        quality = this.getQuality(),
         scale = dir.getScale(),
         position = dir.getPosition();
 
     this.context.save();
-    this.context.scale(quality, quality);
     this.context.translate(position.x / scale.x, position.y / scale.y);
 
     // call abstract method

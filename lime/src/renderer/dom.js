@@ -51,24 +51,21 @@ lime.Renderer.DOM.transform_ = new lime.style.Transform();
  */
 lime.Renderer.DOM.drawSizePosition = function() {
     var size = this.getSize(),
-       quality = this.getQuality(),
        position = this.getPosition(),
-       rquality = this.relativeQuality_ || 1,
        enable3D = this.getCSS3DTransformsAllowed();
 
     if (this.transitionsActive_[lime.Transition.POSITION]) {
         position = this.transitionsActive_[lime.Transition.POSITION];
     }
 
-    var width = Math.round(size.width * rquality);
-    var height = Math.round(size.height * rquality);
+    var width = Math.round(size.width);
+    var height = Math.round(size.height);
 
     var realScale = this.getScale().clone();
     if (this.transitionsActive_[lime.Transition.SCALE]) {
         realScale = this.transitionsActive_[lime.Transition.SCALE].clone();
     }
-    if (width != 0) realScale.scale(size.width / (width * quality / rquality));
-    else realScale.scale(1 / quality);
+    if (width != 0) realScale.scale(size.width / width );
 
     lime.style.setSize(this.domElement, width, height);
 
@@ -76,11 +73,11 @@ lime.Renderer.DOM.drawSizePosition = function() {
         this.anchorPoint_.x * 100, this.anchorPoint_.y * 100, true);
 
 
-    var ax = this.anchorPoint_.x * size.width * rquality;
-    var ay = this.anchorPoint_.y * size.height * rquality;
+    var ax = this.anchorPoint_.x * size.width;
+    var ay = this.anchorPoint_.y * size.height;
 
-    var px = position.x * rquality / quality - ax,
-        py = position.y * rquality / quality - ay;
+    var px = position.x - ax,
+        py = position.y - ay;
 
     var so = this.stroke_ ? this.stroke_.width_ : 0;
 

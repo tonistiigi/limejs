@@ -68,7 +68,7 @@ lime.Renderer.DOM.ROUNDEDRECT.draw = function(el) {
 
     lime.Renderer.DOM.SPRITE.draw.call(this, el);
 
-    lime.style.setBorderRadius(el, [this.radius_*this.getQuality(), this.radius_*this.getQuality()]);
+    lime.style.setBorderRadius(el, [this.radius_, this.radius_]);
 
 };
 
@@ -105,11 +105,11 @@ lime.Renderer.CANVAS.ROUNDEDRECT.draw = function(context) {
     context.clip();
 
     lime.Renderer.CANVAS.SPRITE.draw.call(this, context);
-    
+
     if(this.stroke_){
         context.lineWidth*=2;
         context.stroke();
     }
-    
+
     context.restore();
 };

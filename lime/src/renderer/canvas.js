@@ -27,10 +27,7 @@ lime.Renderer.CANVAS.CLEAR_COLOR = null;
 * @this {lime.Node}
 */
 lime.Renderer.CANVAS.drawCanvas = function() {
-    var quality = this.getQuality(),
-        bounds = this.measureContents(),
-        rquality = this.relativeQuality_ || 1,
-        ownquality = rquality / quality,
+    var bounds = this.measureContents(),
         sizediff,
         PADDING = 12;
 
@@ -77,7 +74,7 @@ lime.Renderer.CANVAS.drawCanvas = function() {
     this.boundsCache = bounds; //save for later use
 
     var bsize = bounds.size();
-    var pxsize = bsize.clone().scale(rquality).ceil();
+    var pxsize = bsize.clone().ceil();
 
 
 
@@ -98,20 +95,17 @@ lime.Renderer.CANVAS.drawCanvas = function() {
             //this.redraw_ = 1;
         }
         if (pxsize.width != 0) {
-            realScale.scale(bsize.width * ownquality / pxsize.width);
-        }
-        else {
-            realScale.scale(1 / quality);
+            realScale.scale(bsize.width / pxsize.width);
         }
 
 
         var fr = this.getFrame();
-        this.ax = (fr.left - bounds.left) * rquality;
-        this.ay = (fr.top - bounds.top) * rquality;
+        this.ax = fr.left - bounds.left;
+        this.ay = fr.top - bounds.top;
 
 
         var ap_offset = this.getSize().clone().
-        scaleVec2(this.getAnchorPoint()).scale(rquality);
+        scaleVec2(this.getAnchorPoint());
 
         var pos = this.getPosition().clone();
 
@@ -119,9 +113,6 @@ lime.Renderer.CANVAS.drawCanvas = function() {
             pos = this.transitionsActive_[lime.Transition.POSITION];
             //this.redraw_ = 1;
         }
-
-        pos.x *= ownquality;
-        pos.y *= ownquality;
 
         pos.x -= ap_offset.width + this.ax;
         pos.y -= ap_offset.height + this.ay;
@@ -147,7 +138,6 @@ lime.Renderer.CANVAS.drawCanvas = function() {
 
         if (this.redraw_) {
             var context = this.domElement.getContext('2d');
-            rquality = this.relativeQuality_ || 1;
             if (lime.Renderer.CANVAS.CLEAR_COLOR) {
                 context.fillStyle = lime.Renderer.CANVAS.CLEAR_COLOR;
                 context.fillRect(0, 0, this.domElement.width, this.domElement.height);
@@ -170,7 +160,6 @@ lime.Renderer.CANVAS.drawCanvas = function() {
                 context.clip();
             }
             context.translate(this.ax, this.ay);
-            context.scale(rquality, rquality);
 
 
             var size = this.getSize(), anchor = this.getAnchorPoint();
