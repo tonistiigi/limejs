@@ -109,6 +109,11 @@ lime.Node = function() {
 
     this.qualityRenderer = null;
 
+    this.redraw_ = undefined;
+    this.boundsCache = undefined;
+    this.ax = undefined;
+    this.ay = undefined;
+
     if (this.constructor === lime.Node) {
       Object.preventExtensions(this)
     }
