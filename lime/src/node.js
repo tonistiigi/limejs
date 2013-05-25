@@ -256,7 +256,7 @@ lime.Node.prototype.getDirty = function() {
 lime.Node.prototype.setDirty = function(value, opt_pass, opt_nextframe) {
 
     if (value && !this.dirty_) {
-        lime.setObjectDirty(this, opt_pass, opt_nextframe);
+        lime.dirtyQueue.add(this, !!opt_pass)
     }
     var old = this.dirty_;
     this.dirty_ |= value;
@@ -269,7 +269,7 @@ lime.Node.prototype.setDirty = function(value, opt_pass, opt_nextframe) {
     }
     if (!goog.isDef(this.dirty_) || !value) {
         this.dirty_ = 0;
-        lime.clearObjectDirty(this, opt_pass, opt_nextframe);
+        lime.dirtyQueue.remove(this, !!opt_pass);
     }
     if(value && this.maskTarget_){
         this.mSet = false;
@@ -865,24 +865,24 @@ lime.Node.prototype.update = function(opt_pass) {
 
             if (i == lime.Transition.POSITION &&
                 this.positionDrawn_ != this.position_) {
-                 this.setDirty(lime.Dirty.POSITION, 0, true);
+                 // this.setDirty(lime.Dirty.POSITION, 0, true);
                  only_predraw = 1;
             }
 
             if (i == lime.Transition.SCALE &&
                 this.scaleDrawn_ != this.scale_) {
-                this.setDirty(lime.Dirty.SCALE, 0, true);
+                // this.setDirty(lime.Dirty.SCALE, 0, true);
                 only_predraw = 1;
             }
 
             if (i == lime.Transition.OPACITY &&
                 this.opacityDrawn_ != this.opacity_) {
-                this.setDirty(lime.Dirty.ALPHA, 0, true);
+                // this.setDirty(lime.Dirty.ALPHA, 0, true);
                 only_predraw = 1;
             }
             if (i == lime.Transition.ROTATION &&
                 this.rotationDrawn_ != this.rotation_) {
-                this.setDirty(lime.Dirty.ROTATION, 0, true);
+                // this.setDirty(lime.Dirty.ROTATION, 0, true);
                 only_predraw = 1;
             }
 
@@ -934,7 +934,7 @@ lime.Node.prototype.update = function(opt_pass) {
             if (parent == this && this.dirty_ == lime.Dirty.POSITION && !this.mask_) {
                 parent.redraw_ = 0;
             }
-            lime.setObjectDirty(this.getDeepestParentWithDom(), 1);
+            lime.dirtyQueue.add(this.getDeepestParentWithDom(), true);
         }
 
         // dom draw happens here

@@ -5,65 +5,102 @@ goog.require('lime.css');
 goog.require('lime.dom');
 goog.require('lime.userAgent');
 
-(function() {
+lime.DirtyQueuePass = function () {
+    this.count = 0;
+    this.items = [];
+}
 
-var dirtyObjectQueue = [[], []];
-var dirtyObjectQueueNext = [[], []];
-
-/**
- * Add object to Dirty objects queue (waiting for redraw)
- * @param {lime.DirtyObject} obj Object that needs to be updated.
- * @param {number=} opt_pass Pass number.
- * @param {boolean=} opt_nextframe Register for next frame.
- */
-lime.setObjectDirty = function(obj, opt_pass, opt_nextframe) {
-    var queue = opt_nextframe ? dirtyObjectQueueNext : dirtyObjectQueue;
-    var pass = opt_pass || 0;
-    goog.array.insert(queue[pass], obj);
-};
-
-/**
- * Remove object from Dirty obejcts queue
- * @param {lime.DirtyObject} obj Object that needs to be updated.
- * @param {number=} opt_pass Pass number.
- * @param {boolean=} opt_nextframe Register for next frame.
- */
-lime.clearObjectDirty = function(obj, opt_pass, opt_nextframe) {
-    /*
-    //todo: enable and test
-    var queue = opt_nextframe ? dirtyObjectQueueNext : dirtyObjectQueue;
-    var pass = opt_pass || 0;
-    goog.array.remove(queue[pass], obj);*/
-};
-
-/**
- * Call update on all elements waiting to be invalidated
- */
-lime.updateDirtyObjects = function() {
-    var ob;
-    for (var i = 0; i < 2; i++) {
-    while (dirtyObjectQueue[i].length) {
-        ob = dirtyObjectQueue[i][0];
-        ob.update(i);
-        ob.dirty_ = 0;
-        if (ob == dirtyObjectQueue[i][0])dirtyObjectQueue[i].shift();
+lime.DirtyQueue = function () {
+    this.pass0 = new lime.DirtyQueuePass();
+    this.pass1 = new lime.DirtyQueuePass();
+}
+lime.DirtyQueue.prototype.add = function (obj, pass) {
+    var queue = pass ? this.pass1 : this.pass0;
+    if (-1 === queue.items.indexOf(obj)) {
+        queue.items[queue.count++] = obj;
     }
-    dirtyObjectQueue[i] = [];
-    }
-    /*
-    if (dirtyObjectQueue.length != 2 && !dirtyObjectQueue[0].length &&
-        !dirtyObjectQueue[1].length)
-    console.log(dirtyObjectQueue);
+}
+
+lime.DirtyQueue.prototype.remove = function (obj, opt_pass) {
+    // todo:
+}
+
+lime.DirtyQueue.prototype.process = function () {
+    var queue, obj
     for (var i = 0; i < 2; i++) {
-        for (var j = 0; i < dirtyObjectQueue[i].length; i++) {
+        queue = i ? this.pass1 : this.pass0;
+        for (var j = 0; j < queue.count; j++) {
+            obj = queue.items[j];
+            obj.update(i);
+            obj.dirty_ = 0;
+            queue.items[j] = null;
+        }
+        queue.count = 0;
+    }
+}
 
-       }
-   }*/
-    //dirtyObjectQueue=dirtyObjectQueueNext;
-    dirtyObjectQueueNext = [[], []];
-};
+lime.dirtyQueue = new lime.DirtyQueue()
 
-})();
+//
+// (function() {
+//
+// var dirtyObjectQueue = [[], []];
+// var dirtyObjectQueueNext = [[], []];
+//
+// /**
+//  * Add object to Dirty objects queue (waiting for redraw)
+//  * @param {lime.DirtyObject} obj Object that needs to be updated.
+//  * @param {number=} opt_pass Pass number.
+//  * @param {boolean=} opt_nextframe Register for next frame.
+//  */
+// lime.setObjectDirty = function(obj, opt_pass, opt_nextframe) {
+//     var queue = opt_nextframe ? dirtyObjectQueueNext : dirtyObjectQueue;
+//     var pass = opt_pass || 0;
+//     goog.array.insert(queue[pass], obj);
+// };
+//
+// /**
+//  * Remove object from Dirty obejcts queue
+//  * @param {lime.DirtyObject} obj Object that needs to be updated.
+//  * @param {number=} opt_pass Pass number.
+//  * @param {boolean=} opt_nextframe Register for next frame.
+//  */
+// lime.clearObjectDirty = function(obj, opt_pass, opt_nextframe) {
+//     /*
+//     //todo: enable and test
+//     var queue = opt_nextframe ? dirtyObjectQueueNext : dirtyObjectQueue;
+//     var pass = opt_pass || 0;
+//     goog.array.remove(queue[pass], obj);*/
+// };
+//
+// /**
+//  * Call update on all elements waiting to be invalidated
+//  */
+// lime.updateDirtyObjects = function() {
+//     var ob;
+//     for (var i = 0; i < 2; i++) {
+//     while (dirtyObjectQueue[i].length) {
+//         ob = dirtyObjectQueue[i][0];
+//         ob.update(i);
+//         ob.dirty_ = 0;
+//         if (ob == dirtyObjectQueue[i][0])dirtyObjectQueue[i].shift();
+//     }
+//     dirtyObjectQueue[i] = [];
+//     }
+//     /*
+//     if (dirtyObjectQueue.length != 2 && !dirtyObjectQueue[0].length &&
+//         !dirtyObjectQueue[1].length)
+//     console.log(dirtyObjectQueue);
+//     for (var i = 0; i < 2; i++) {
+//         for (var j = 0; i < dirtyObjectQueue[i].length; i++) {
+//
+//        }
+//    }*/
+//     //dirtyObjectQueue=dirtyObjectQueueNext;
+//     dirtyObjectQueueNext = [[], []];
+// };
+//
+// })();
 
 /**
 * Enum for Dirty states.
