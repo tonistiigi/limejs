@@ -43,6 +43,8 @@ lime.Renderer.DOM.updateLayout = function() {
     }*/
 };
 
+lime.Renderer.DOM.transform_ = new lime.style.Transform();
+
 /**
  * Calculate the size and position of the element and draw it
  * @this {lime.Node}
@@ -89,11 +91,11 @@ lime.Renderer.DOM.drawSizePosition = function() {
 
 
     if (this.domElement != this.containerElement) {
-        if (!this.transitionsActiveSet_[lime.Transition.POSITION] && !this.transitionsActiveSet_[lime.Transition.SCALE] && !this.transitionsActiveSet_[lime.Transition.ROTATION])
-        lime.style.setTransform(this.containerElement,
-                new lime.style.Transform()
-                    .set3DAllowed(enable3D)
+        if (!this.transitionsActiveSet_[lime.Transition.POSITION] && !this.transitionsActiveSet_[lime.Transition.SCALE] && !this.transitionsActiveSet_[lime.Transition.ROTATION]) {
+            lime.style.setTransform(this.containerElement,
+                lime.Renderer.DOM.transform_.reset().set3DAllowed(enable3D)
                     .translate(ax-so, ay-so));
+        }
     }
 
     if (this.mask_ != this.activeMask_) {
@@ -106,7 +108,7 @@ lime.Renderer.DOM.drawSizePosition = function() {
         }
     }
 
-    var transform = new lime.style.Transform()
+    var transform = lime.Renderer.DOM.transform_.reset()
         .setPrecision(0.1)
         .set3DAllowed(enable3D);
 
