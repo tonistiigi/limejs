@@ -51,23 +51,26 @@ lime.Renderer.DOM.transform_ = new lime.style.Transform();
  */
 lime.Renderer.DOM.drawSizePosition = function() {
     var size = this.getSize(),
-       position = this.getPosition(),
        enable3D = this.getCSS3DTransformsAllowed();
 
     if (this.transitionsActive_[lime.Transition.POSITION]) {
-        position = this.transitionsActive_[lime.Transition.POSITION];
+        var position = this.transitionsActive_[lime.Transition.POSITION];
+    }
+    else {
+        position = this.getPosition();
     }
 
     var width = Math.round(size.width);
     var height = Math.round(size.height);
 
-    var realScale = this.getScale().clone();
     if (this.transitionsActive_[lime.Transition.SCALE]) {
-        realScale = this.transitionsActive_[lime.Transition.SCALE].clone();
+        var scale = this.transitionsActive_[lime.Transition.SCALE]();
     }
-    if (width != 0) realScale.scale(size.width / width );
+    else {
+        scale = this.getScale();
+    }
 
-    lime.style.setSize(this.domElement, width, height);
+    lime.style.setSize(this.domElement, size.width, size.height);
 
     lime.style.setTransformOrigin(this.domElement,
         this.anchorPoint_.x * 100, this.anchorPoint_.y * 100, true);
@@ -121,7 +124,7 @@ lime.Renderer.DOM.drawSizePosition = function() {
         rotation = -this.transitionsActive_[lime.Transition.ROTATION];
     }
 
-    transform.translate(px, py).scale(realScale.x, realScale.y).
+    transform.translate(px, py).scale(scale.x, scale.y).
         rotate(rotation);
 
     if (!this.transitionsActiveSet_[lime.Transition.POSITION] && !this.transitionsActiveSet_[lime.Transition.SCALE] && !this.transitionsActiveSet_[lime.Transition.ROTATION]) {
