@@ -49,6 +49,8 @@ lime.animation.Animation = function() {
 
     this.dt_ = 0;
 
+    this.speedCalcDone_ = false;
+
     goog.getUid(this);
 
 };
@@ -216,7 +218,7 @@ lime.animation.Animation.prototype.step_ = function(dt) {
         this.calcDurationFromSpeed_();
     }
     if(this.firstFrame_){
-        delete this.firstFrame_;
+        this.firstFrame_ = 0;
         dt = 1;
     }
 

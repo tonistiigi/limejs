@@ -92,7 +92,7 @@ lime.Node = function() {
     this.mRot = null;
     this.hidden_ = null;
     this.autoHide_ = null;
-    this.dependencySet_ = null;
+    this.dependencySet_ = false;
     this.maskTarget_ = null;
 
     this.positionDrawn_ = undefined;
@@ -347,7 +347,7 @@ lime.Node.prototype.setMask = function(value) {
 
     if(this.mask_){
         this.mask_.releaseDependencies();
-        delete this.mask_.maskTarget_;
+        this.mask_.maskTarget_ = null;
     }
 
     this.mask_ = value;
@@ -727,9 +727,9 @@ lime.Node.prototype.updateDomElement = function() {
 lime.Node.prototype.removeDomElement = function() {
     if (this.rootElement) {
         goog.dom.removeNode(this.rootElement);
-        delete this.domElement;
-        delete this.rootElement;
-        delete this.containerElement;
+        this.domElement = undefined;
+        this.rootElement = undefined;
+        this.containerElement = undefined;
         //return true;
     }
 };
@@ -1197,7 +1197,7 @@ lime.Node.prototype.removeDependency = function(other){
 }
 
 lime.Node.prototype.releaseDependencies = function(){
-    delete this.dependencySet_;
+    this.dependencySet_ = false;
     this.removeDependency(this.getParent());
 }
 

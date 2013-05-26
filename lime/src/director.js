@@ -127,6 +127,7 @@ lime.Director = function(parentElement, opt_width, opt_height) {
     // --define goog.debug=false
     this.setDisplayFPS(false);
     this.setPaused(false);
+    this.pauseScene = null;
 
     var vsm = new goog.dom.ViewportSizeMonitor();
     goog.events.listen(vsm, goog.events.EventType.RESIZE,
@@ -225,7 +226,7 @@ lime.Director.prototype.setPaused = function(value) {
     }
     else if (this.pauseScene) {
         this.popScene();
-        delete this.pauseScene;
+        this.pauseScene = null;
     }
     return this;
 };
