@@ -264,11 +264,11 @@ lime.Node.prototype.setDirty = function(value, opt_pass, opt_nextframe) {
             child.setDirty(lime.Dirty.LAYOUT);
         }
     }
-    if (!goog.isDef(this.dirty_) || !value) {
+    if (!value) {
         this.dirty_ = 0;
         lime.dirtyQueue.remove(this, !!opt_pass);
     }
-    if(value && this.maskTarget_){
+    else if (this.maskTarget_){
         this.mSet = false;
         this.maskTarget_.setDirty(~0);
     }
@@ -775,12 +775,13 @@ lime.Node.prototype.update = function(opt_pass) {
        return this.setDirty(0, pass);
    }
 
-   var uid = goog.getUid(this);
    if (this.dirty_ & lime.Dirty.LAYOUT) {
        this.updateLayout();
    }
 
-   var do_draw = this.renderer.getType() == lime.Renderer.DOM || pass;
+   var renderer = this.renderer.getType();
+
+   var do_draw = renderer == lime.Renderer.DOM || pass;
 
     if (do_draw) {
 
@@ -837,19 +838,19 @@ lime.Node.prototype.update = function(opt_pass) {
             value = this.transitionsAdd_[i];
             property = lime.Node.getPropertyForTransition(parseInt(i, 10));
 
-            if(this.renderer.getType()==lime.Renderer.DOM || property!='opacity'){
+            if (renderer === lime.Renderer.DOM || property!='opacity') {
 
-            this.transitionsActive_[i] = value[0];
-            lime.style.setTransition(this.domElement,
-                property, value[1], value[2]);
-
-            if (this.domElement != this.containerElement &&
-                property == lime.style.transformProperty) {
-
-                lime.style.setTransition(this.containerElement,
+                this.transitionsActive_[i] = value[0];
+                lime.style.setTransition(this.domElement,
                     property, value[1], value[2]);
 
-            }
+                if (this.domElement != this.containerElement &&
+                    property == lime.style.transformProperty) {
+
+                    lime.style.setTransition(this.containerElement,
+                        property, value[1], value[2]);
+
+                }
             }
             delete this.transitionsAdd_[i];
         }
@@ -870,7 +871,7 @@ lime.Node.prototype.update = function(opt_pass) {
         this.renderer.drawCanvas.call(this);
     }
     else {
-        if (this.renderer.getType() == lime.Renderer.CANVAS) {
+        if (renderer === lime.Renderer.CANVAS) {
             var parent = this.getDeepestParentWithDom();
             parent.redraw_ = 1;
             if (parent == this && this.dirty_ == lime.Dirty.POSITION && !this.mask_) {
@@ -897,9 +898,6 @@ lime.Node.prototype.update = function(opt_pass) {
             this.dependencies_[i].setDirty(lime.Dirty.ALL);
         }
     }
-
-    //clear dirty
-    this.setDirty(0, pass);
 
 };
 

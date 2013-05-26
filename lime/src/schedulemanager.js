@@ -82,8 +82,9 @@ lime.scheduleManager.Task.prototype.step_ = function(dt) {
         var i = this.functionStack_.length;
         while (--i >= 0) {
             f = this.functionStack_[i];
-            if (f && f[0] && goog.isFunction(f[1]))
-            (f[1]).call(f[2], delta);
+            if (f && f[0] && typeof f[1] === 'function') {
+                f[1].call(f[2], delta);
+            }
         }
         if (this.limit != -1) {
             this.limit--;
@@ -298,13 +299,11 @@ lime.scheduleManager.FF18_HACK = /Firefox\/18./.test(goog.userAgent.getUserAgent
  * @private
  */
 lime.scheduleManager.dispatch_ = function(delta){
-
-
     var stack = this.taskStack_.slice()
     var i = stack.length;
     while (--i >= 0) stack[i].step_(delta);
     //hack to deal with FF4 CSS transformation issue https://bugzilla.mozilla.org/show_bug.cgi?id=637597
-    if(lime.transformSet_ == 1 && this.FF18_HACK && !lime.FF4_USE_HW_ACCELERATION){
+    if(this.FF18_HACK && !lime.FF4_USE_HW_ACCELERATION && lime.transformSet_ == 1 ){
         if(lime.scheduleManager.odd_){
             document.body.style['MozTransform'] = '';
             lime.scheduleManager.odd_=0;

@@ -117,10 +117,10 @@ lime.Sprite.prototype.getCanvasContextName_ = (function() {
  * @this {lime.Sprite}
  */
 lime.Renderer.DOM.SPRITE.draw = function(el) {
-    if (!goog.isNull(this.fill_)) {
+    if (this.fill_ !== null) {
         this.fill_.setDOMStyle(el, this);
     }
-    if (!goog.isNull(this.stroke_)) {
+    if (this.stroke_ !== null) {
         this.stroke_.setDOMStyle(el, this);
     } else {
         el.style['borderWidth'] = 0;

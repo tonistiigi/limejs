@@ -60,9 +60,6 @@ lime.Renderer.DOM.drawSizePosition = function() {
         position = this.getPosition();
     }
 
-    var width = Math.round(size.width);
-    var height = Math.round(size.height);
-
     if (this.transitionsActive_[lime.Transition.SCALE]) {
         var scale = this.transitionsActive_[lime.Transition.SCALE]();
     }
@@ -143,22 +140,23 @@ lime.Renderer.DOM.update = function() {
 
     lime.Renderer.DOM.drawSizePosition.call(this);
 
-    if (!this.transitionsActiveSet_[lime.Transition.OPACITY]) {
-        var opacity = this.opacity_;
-        if (goog.isDef(this.transitionsActive_[lime.Transition.OPACITY])) {
-            opacity = this.transitionsActive_[lime.Transition.OPACITY];
+    if ((this.dirty_ & lime.Dirty.ALPHA) && !this.transitionsActiveSet_[lime.Transition.OPACITY]) {
+        if (this.transitionsActive_[lime.Transition.OPACITY] !== undefined) {
+            var opacity = this.transitionsActive_[lime.Transition.OPACITY];
         }
-        if (this.getDirty() & lime.Dirty.ALPHA) {
-            goog.style.setOpacity(this.domElement, opacity);
+        else {
+            opacity = this.opacity_;
         }
+        goog.style.setOpacity(this.domElement, opacity);
     }
 
-    if (this.getDirty() & lime.Dirty.VISIBILITY) {
+    if (this.dirty_ & lime.Dirty.VISIBILITY) {
         this.domElement.style['display'] = this.hidden_ ? 'none' : 'block';
     }
 
-    if(!this.maskTarget_)
-    this.renderer.draw.call(this, this.domElement);
+    if(!this.maskTarget_) {
+        this.renderer.draw.call(this, this.domElement);
+    }
 
 };
 
