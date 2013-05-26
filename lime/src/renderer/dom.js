@@ -94,7 +94,7 @@ lime.Renderer.DOM.drawSizePosition = function() {
         if (!this.transitionsActiveSet_[lime.Transition.POSITION] && !this.transitionsActiveSet_[lime.Transition.SCALE] && !this.transitionsActiveSet_[lime.Transition.ROTATION]) {
             lime.style.setTransform(this.containerElement,
                 lime.Renderer.DOM.transform_.reset().set3DAllowed(enable3D)
-                    .translate(ax-so, ay-so));
+                    .translate(ax-so, ay-so, 0));
         }
     }
 
@@ -115,8 +115,8 @@ lime.Renderer.DOM.drawSizePosition = function() {
     if (this.mask_) {
         lime.Renderer.DOM.calculateMaskPosition.call(this.mask_);
         transform.setPrecision(0.1)
-            .translate(-this.mask_.mX - ax, -this.mask_.mY - ay)
-            .rotate(this.mask_.mRot, 'rad').translate(ax, ay).setPrecision(1);
+            .translate(-this.mask_.mX - ax, -this.mask_.mY - ay, 0)
+            .rotate(this.mask_.mRot, 'rad').translate(ax, ay, 0).setPrecision(1);
     }
 
     var rotation = -this.getRotation();
@@ -124,7 +124,7 @@ lime.Renderer.DOM.drawSizePosition = function() {
         rotation = -this.transitionsActive_[lime.Transition.ROTATION];
     }
 
-    transform.translate(px, py).scale(scale.x, scale.y).
+    transform.translate(px, py, 0).scale(scale.x, scale.y).
         rotate(rotation);
 
     if (!this.transitionsActiveSet_[lime.Transition.POSITION] && !this.transitionsActiveSet_[lime.Transition.SCALE] && !this.transitionsActiveSet_[lime.Transition.ROTATION]) {
@@ -212,7 +212,7 @@ lime.Renderer.DOM.calculateMaskPosition = function() {
         lime.style.setTransform(el, new lime.style.Transform()
             .setPrecision(0.1)
             .set3DAllowed(this.getCSS3DTransformsAllowed())
-            .translate(tl.x, tl.y).rotate(-rot, 'rad'));
+            .translate(tl.x, tl.y, 0).rotate(-rot, 'rad'));
     }
 
     if (this.renderer.getType() == lime.Renderer.DOM) {

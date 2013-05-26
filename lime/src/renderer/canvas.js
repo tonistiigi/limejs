@@ -127,9 +127,10 @@ lime.Renderer.CANVAS.drawCanvas = function() {
             if (goog.isDef(this.transitionsActive_[lime.Transition.ROTATION])) {
                 rotation = -this.transitionsActive_[lime.Transition.ROTATION];
             }
+
             if (this.domElement !== this.container) {
                 lime.style.setTransform(this.domElement,
-                    new lime.style.Transform().setPrecision(.1).translate(pos.x, pos.y).
+                    new lime.style.Transform().setPrecision(.1).translate(pos.x, pos.y, 0).
                     scale(realScale.x, realScale.y).rotate(rotation));
             }
         }

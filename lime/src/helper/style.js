@@ -78,6 +78,9 @@ lime.style.Transform = function(opt_precision) {
     }
 };
 
+lime.style.Transform.prototype.supports3D_ = lime.userAgent.CHROME ||
+    lime.userAgent.IOS || lime.userAgent.PLAYBOOK;
+
 lime.style.Transform.prototype.reset = function() {
     this.value = '';
     this.precision = 1;
@@ -113,16 +116,15 @@ lime.style.Transform.prototype.scale = function(sx, sy) {
  * @return {lime.style.Transform} object itself.
  */
 lime.style.Transform.prototype.rotate = function(angle, opt_unit) {
-    var rot_str;
+    if (angle == 0) return this
 
-    if (this.enable3D_ && (lime.userAgent.IOS || lime.userAgent.PLAYBOOK)) {
-        rot_str = 'rotate3d(0, 0, 1, ' + angle + (opt_unit ? opt_unit : 'deg') + ')';
+    opt_unit = opt_unit || 'deg'
+    if (this.enable3D_ && this.supports3D_) {
+        var rot_str = 'rotate3d(0, 0, 1, ' + angle + opt_unit + ') ';
     } else {
-        rot_str = 'rotate(' + angle + (opt_unit ? opt_unit : 'deg') + ')';
+        rot_str = 'rotate(' + angle + opt_unit + ') ';
     }
-    if (angle != 0) {
-        this.value += rot_str + ' ';
-    }
+    this.value += rot_str;
 
     return this;
 };
@@ -134,20 +136,20 @@ lime.style.Transform.prototype.rotate = function(angle, opt_unit) {
  * @param {number=} opt_tz Offset in z-axis.
  * @return {lime.style.Transform} object itself.
  */
-lime.style.Transform.prototype.translate = function(tx, ty, opt_tz) {
+lime.style.Transform.prototype.translate = function(tx, ty, tz) {
 
     var p = 1 / this.precision;
-    var val = 'translate';
+    tx *= p;
+    ty *= p;
+    tz *= p;
 
-    if (this.enable3D_ && (lime.userAgent.CHROME || lime.userAgent.IOS || lime.userAgent.PLAYBOOK)) {
-        val += '3d';
+    if (this.enable3D_ && this.supports3D_) {
+        var val = 'translate3d(' + tx + 'px,' + ty + 'px,' + tz + 'px) ';
     }
-    val += '(' + (tx * p) + 'px,' + (ty * p) + 'px';
-    if (this.enable3D_ && (lime.userAgent.CHROME || lime.userAgent.IOS || lime.userAgent.PLAYBOOK)) {
-        val += ',' + ((opt_tz ? opt_tz : 0) * p) + 'px';
+    else {
+        val = 'translate(' + tx + 'px,' + ty + 'px) ';
     }
-    this.value += val + ') ';
-
+    this.value += val;
     return this;
 };
 
