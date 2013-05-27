@@ -691,30 +691,20 @@ lime.Node.prototype.setOpacity = function(value) {
  * Create DOM element to render the node
  */
 lime.Node.prototype.createDomElement = function() {
-
     var newTagName =
         this.renderer.getType() == lime.Renderer.CANVAS ? 'canvas' : 'div';
-    var create = function() {
-        this.domElement = this.rootElement =
-            this.containerElement = goog.dom.createDom(newTagName);
-        if (this.domClassName)
-            goog.dom.classes.add(this.domElement, this.domClassName);
-        this.dirty_ |= ~0;
-    };
 
-    if (this.domElement) {
-        var curtag = this.domElement.tagName.toLowerCase();
-        if (curtag != newTagName) {
-            var oldEl = this.rootElement;
-            create.call(this);
-            if (oldEl.parentNode)
-                oldEl.parentNode.replaceChild(this.rootElement, oldEl);
-            //return true;
+    if (!this.domElement || newTagName !== this.domElement.tagName.toLowerCase()) {
+        var oldEl = this.rootElement;
+        this.domElement = this.rootElement = this.containerElement =
+            goog.dom.createDom(newTagName);
+        if (this.domClassName) {
+            goog.dom.classes.add(this.domElement, this.domClassName);
         }
-    }
-    else {
-        create.call(this);
-        //return true;
+        this.dirty_ |= ~0;
+        if (oldEl && oldEl.parentNode) {
+            oldEl.parentNode.replaceChild(this.rootElement, oldEl);
+        }
     }
 
 };
