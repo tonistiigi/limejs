@@ -12,7 +12,6 @@ goog.require('box2d.Vec2');
 goog.require('box2d.World');
 goog.require('lime');
 goog.require('lime.Circle');
-goog.require('lime.CoverNode');
 goog.require('lime.Director');
 goog.require('lime.Layer');
 goog.require('lime.Scene');

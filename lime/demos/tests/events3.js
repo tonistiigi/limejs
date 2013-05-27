@@ -3,7 +3,6 @@ goog.provide('test.events3');
 
 goog.require('lime');
 goog.require('lime.Circle');
-goog.require('lime.CoverNode');
 goog.require('lime.Director');
 goog.require('lime.Layer');
 goog.require('lime.Scene');

@@ -2,8 +2,6 @@
 
 goog.provide('lime.Director');
 
-
-goog.require('lime.CoverNode');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.ViewportSizeMonitor');
@@ -52,13 +50,6 @@ lime.Director = function(parentElement, opt_width, opt_height) {
      */
     this.sceneStack_ = [];
 
-    /**
-     * Array of CoverNode instances.
-     * @type {Array.<lime.CoverNode>}
-     * @private
-     */
-    this.coverStack_ = [];
-
     this.domClassName = goog.getCssName('lime-director');
 
     if (parentElement.getContext) {
@@ -73,19 +64,6 @@ lime.Director = function(parentElement, opt_width, opt_height) {
 
     if (this.domElement && this.domElement !== this.container) {
         parentElement.appendChild(this.domElement);
-    }
-
-    if (goog.userAgent.WEBKIT && goog.userAgent.MOBILE) {
-    //todo: Not pretty solution. Cover layers may not be needed at all.
-    this.coverElementBelow = document.createElement('div');
-    goog.dom.classes.add(this.coverElementBelow,
-        goog.getCssName('lime-cover-below'));
-    goog.dom.insertSiblingBefore(this.coverElementBelow, this.domElement);
-
-    this.coverElementAbove = document.createElement('div');
-    goog.dom.classes.add(this.coverElementAbove,
-        goog.getCssName('lime-cover-above'));
-    goog.dom.insertSiblingAfter(this.coverElementAbove, this.domElement);
     }
 
     if (parentElement.style['position'] != 'absolute') {
@@ -441,45 +419,6 @@ lime.Director.prototype.popScene = function(opt_transition, opt_duration) {
     }
 };
 
-
-/**
- * Add CoverNode object to the viewport
- * @param {lime.CoverNode} cover Covernode.
- * @param {boolean} opt_addAboveDirector Cover is added above director object.
- */
-lime.Director.prototype.addCover = function(cover, opt_addAboveDirector) {
-    //mobile safari performes much better with this hack. needs investigation.
-    if (goog.userAgent.WEBKIT && goog.userAgent.MOBILE) {
-        if (opt_addAboveDirector) {
-            this.coverElementAbove.appendChild(cover.domElement);
-        }
-        else {
-            this.coverElementBelow.appendChild(cover.domElement);
-        }
-
-    }
-    else {
-        if (opt_addAboveDirector) {
-             goog.dom.insertSiblingAfter(cover.domElement, this.domElement);
-        }
-        else {
-             goog.dom.insertSiblingBefore(cover.domElement, this.domElement);
-        }
-    }
-    cover.director = this;
-    this.coverStack_.push(cover);
-};
-
-/**
- * Remove CoverNode object from the viewport
- * @param {lime.CoverNode} cover Cover to remove.
- */
-lime.Director.prototype.removeCover = function(cover) {
-    goog.array.remove(this.coverStack_, cover);
-    goog.dom.removeNode(cover.domElement);
-};
-
-
 /**
  * Return bounds of director,
  * @param {goog.math.Box} box Edges.
@@ -533,7 +472,9 @@ lime.Director.prototype.measureContents = function() {
 /**
  * @inheritDoc
  */
+/*
 lime.Director.prototype.update = function() {
+<<<<<<< HEAD
     lime.Node.prototype.update.apply(this, arguments);
 
     var i = this.coverStack_.length;
@@ -541,6 +482,10 @@ lime.Director.prototype.update = function() {
         this.coverStack_[i].update();
     }
 };
+=======
+    lime.Node.prototype.update.call(this);
+};*/
+>>>>>>> Remove covernodes
 
 
 /**

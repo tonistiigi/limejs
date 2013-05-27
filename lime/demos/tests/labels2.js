@@ -2,7 +2,6 @@ goog.provide('test.labels2');
 
 
 goog.require('lime');
-goog.require('lime.CoverNode');
 goog.require('lime.Director');
 goog.require('lime.Layer');
 goog.require('lime.Scene');

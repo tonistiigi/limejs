@@ -4,7 +4,6 @@ goog.provide('test.button2');
 goog.require('lime');
 goog.require('lime.Button');
 goog.require('lime.Circle');
-goog.require('lime.CoverNode');
 goog.require('lime.Director');
 goog.require('lime.GlossyButton');
 goog.require('lime.Label');
