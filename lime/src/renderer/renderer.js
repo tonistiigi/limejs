@@ -6,7 +6,9 @@ goog.provide('lime.Renderer');
  * technologies that are used to draw Node instaces on screen.
  * @constructor
  */
-lime.Renderer = function() {};
+lime.Renderer = function() {
+    this.base = this;
+};
 
 /**
  * Draw the object using the renderer
@@ -18,7 +20,7 @@ lime.Renderer.prototype.draw = goog.nullFunction;
  * @return {lime.Renderer} base renderer.
  */
 lime.Renderer.prototype.getType = function() {
-    return this.base ? this.base : this;
+    return this.base;
 };
 
 /**
@@ -28,6 +30,6 @@ lime.Renderer.prototype.getType = function() {
  */
 lime.Renderer.prototype.makeSubRenderer = function(sub) {
     goog.object.extend(/** @lends {this} */sub, this);
-    sub.base = this.getType();
+    sub.base = this.base;
     return sub;
 };
