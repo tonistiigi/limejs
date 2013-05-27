@@ -253,7 +253,12 @@ lime.Node.prototype.getDirty = function() {
 lime.Node.prototype.setDirty = function(value, opt_pass, opt_nextframe) {
 
     if (value && !this.dirty_) {
-        lime.dirtyQueue.add(this, !!opt_pass)
+        if (!opt_pass) {
+            lime.dirtyQueuePass1.add(this);
+        }
+        else {
+            lime.dirtyQueuePass2.add(this);
+        }
     }
     var old = this.dirty_;
     this.dirty_ |= value;
@@ -266,7 +271,13 @@ lime.Node.prototype.setDirty = function(value, opt_pass, opt_nextframe) {
     }
     if (!value) {
         this.dirty_ = 0;
-        lime.dirtyQueue.remove(this, !!opt_pass);
+        /*
+        if (!opt_pass) {
+            lime.dirtyQueuePass1.remove(this);
+        }
+        else {
+            lime.dirtyQueuePass2.remove(this);
+        }*/
     }
     else if (this.maskTarget_){
         this.mSet = false;
@@ -877,7 +888,7 @@ lime.Node.prototype.update = function(opt_pass) {
             if (parent == this && this.dirty_ == lime.Dirty.POSITION && !this.mask_) {
                 parent.redraw_ = 0;
             }
-            lime.dirtyQueue.add(this.getDeepestParentWithDom(), true);
+            lime.dirtyQueuePass2.add(this.getDeepestParentWithDom());
         }
 
         // dom draw happens here

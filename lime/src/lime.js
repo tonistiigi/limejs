@@ -5,19 +5,14 @@ goog.require('lime.css');
 goog.require('lime.dom');
 goog.require('lime.userAgent');
 
-lime.DirtyQueuePass = function () {
+lime.DirtyQueue = function (pass) {
+    this.pass = pass;
     this.count = 0;
     this.items = [];
 }
-
-lime.DirtyQueue = function () {
-    this.pass0 = new lime.DirtyQueuePass();
-    this.pass1 = new lime.DirtyQueuePass();
-}
-lime.DirtyQueue.prototype.add = function (obj, pass) {
-    var queue = pass ? this.pass1 : this.pass0;
-    if (-1 === queue.items.indexOf(obj)) {
-        queue.items[queue.count++] = obj;
+lime.DirtyQueue.prototype.add = function (obj) {
+    if (-1 === this.items.indexOf(obj)) {
+        this.items[this.count++] = obj;
     }
 }
 
@@ -26,20 +21,18 @@ lime.DirtyQueue.prototype.remove = function (obj, opt_pass) {
 }
 
 lime.DirtyQueue.prototype.process = function () {
-    var queue, obj
-    for (var i = 0; i < 2; i++) {
-        queue = i ? this.pass1 : this.pass0;
-        for (var j = 0; j < queue.count; j++) {
-            obj = queue.items[j];
-            obj.update(i);
-            obj.dirty_ = 0;
-            queue.items[j] = null;
-        }
-        queue.count = 0;
+    var obj;
+    for (var i = 0; i < this.count; i++) {
+        obj = this.items[i];
+        obj.update(this.pass);
+        obj.dirty_ = 0;
+        this.items[i] = null;
     }
+    this.count = 0;
 }
 
-lime.dirtyQueue = new lime.DirtyQueue()
+lime.dirtyQueuePass1 = new lime.DirtyQueue(0)
+lime.dirtyQueuePass2 = new lime.DirtyQueue(1)
 
 //
 // (function() {

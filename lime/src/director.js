@@ -301,7 +301,8 @@ lime.Director.prototype.step_ = function(delta) {
             this.accumDt_ = 0;
         }
     }
-    lime.dirtyQueue.process();
+    lime.dirtyQueuePass1.process();
+    lime.dirtyQueuePass2.process();
 };
 
 
