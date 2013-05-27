@@ -469,24 +469,6 @@ lime.Director.prototype.measureContents = function() {
 
 };
 
-/**
- * @inheritDoc
- */
-/*
-lime.Director.prototype.update = function() {
-<<<<<<< HEAD
-    lime.Node.prototype.update.apply(this, arguments);
-
-    var i = this.coverStack_.length;
-    while (--i >= 0) {
-        this.coverStack_[i].update();
-    }
-};
-=======
-    lime.Node.prototype.update.call(this);
-};*/
->>>>>>> Remove covernodes
-
 
 /**
  * Update dimensions based on viewport dimension changes
